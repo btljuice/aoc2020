@@ -1,3 +1,4 @@
+import scala.collection.mutable
 import scala.io.Source
 
 case class Survey(
@@ -6,10 +7,9 @@ case class Survey(
 )
 object Survey {
   def apply(answers: List[String]): Survey = {
-    Survey(
-      answers.flatMap(_.toCharArray).groupBy(c => c).mapValues(_.size),
-      answers.size,
-    )
+    val freqs = mutable.Map.empty[Char, Int].withDefaultValue(0)
+    answers.foreach( _.foreach( c => freqs(c) = freqs(c) + 1 ))
+    Survey(freqs.toMap, answers.size)
   }
 }
 
