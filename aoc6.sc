@@ -1,12 +1,13 @@
-import scala.collection.mutable
 import scala.io.Source
 
 case class Survey(
-  answersFreq: mutable.Map[Char, Int],
+  answers: String,
   nbRespondents: Int,
-)
+) {
+  def add(newAnswers: String) = Survey(answers + newAnswers, nbRespondents + 1)
+}
 object Survey {
-  def empty = Survey(mutable.Map.empty[Char, Int], 0)
+  def empty = Survey("", 0)
 }
 
 val surveys = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc6.txt")
@@ -17,13 +18,15 @@ val surveys = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc
     if (line.isEmpty) {
       (surveys :+ cur, Survey.empty)
     } else {
-      line.foreach { c => cur.answersFreq(c) = cur.answersFreq.getOrElse(c, 0) + 1 }
-      (surveys, Survey(cur.answersFreq, cur.nbRespondents + 1))
+      (surveys, cur.add(line))
     }
   }._1
 
-val answer1: Int = surveys.map(_.answersFreq.size).sum
-val answer2: Int = surveys.map(s =>
-  s.answersFreq.count { case (_, v) => v == s.nbRespondents }
-).sum
+val answer1: Int = surveys.map(_.answers.groupBy(c => c).size).sum
+val answer2: Int = surveys.map{ s =>
+  s.answers
+    .groupBy(c => c)
+    .mapValues(_.size)
+    .count { case (_, v) => v == s.nbRespondents }
+}.sum
 
