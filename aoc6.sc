@@ -1,16 +1,8 @@
-import scala.collection.mutable
 import scala.io.Source
 
-case class Survey(
-  answers: Map[Char, Int],
-  nbRespondents: Int,
-)
-object Survey {
-  def apply(answers: List[String]): Survey = {
-    val freqs = mutable.Map.empty[Char, Int].withDefaultValue(0)
-    answers.foreach( _.foreach( c => freqs(c) = freqs(c) + 1 ))
-    Survey(freqs.toMap, answers.size)
-  }
+case class Survey(answers: List[String]) {
+  def total = answers.map(_.toSet).reduce(_ union _).size
+  def intersection = answers.map(_.toSet).reduce(_ intersect _).size
 }
 
 val surveys = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc6.txt")
@@ -25,6 +17,6 @@ val surveys = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc
     }
   }._1
 
-val answer1: Int = surveys.map(_.answers.size).sum
-val answer2: Int = surveys.map{ s => s.answers.count(_._2 == s.nbRespondents) }.sum
+val answer1: Int = surveys.map(_.total).sum
+val answer2: Int = surveys.map(_.intersection).sum
 
