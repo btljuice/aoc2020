@@ -2,17 +2,21 @@ import scala.annotation.tailrec
 import scala.io.Source
 
 val ruleRegex = raw"(.+) bags contain (.+)".r
-val containedRegex = raw"\d+ (\D+) bag[s]?[,.]".r
+val containedRegex = raw"(\d+) (\D+) bag[s]?[,.]".r
+
+case class BagInfo(n: Int, color: String)
 
 val contains = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc7.txt")
   .getLines
   .flatMap { case ruleRegex(bag, containedBagsStr) =>
-    val containedBags = containedRegex.findAllMatchIn(containedBagsStr).map(_.group(1)).toSet
+    val containedBags = containedRegex.findAllMatchIn(containedBagsStr).map { m =>
+      BagInfo(m.group(1).toInt, m.group(2))
+    }.toList
     if (containedBags.nonEmpty) Some(bag -> containedBags) else None
   }.toMap
 
 val containedBy = contains
-  .map { case (k, v) => v.map(_ -> k) }.flatten
+  .map { case (k, v) => v.map(_.color -> k) }.flatten
   .groupBy(_._1)
   .mapValues(_.map(_._2).toSet)
 
