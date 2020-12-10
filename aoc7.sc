@@ -33,5 +33,14 @@ def bfs[T](tree: Map[String, Set[String]], from: String, startAcc: T)(f: (String
   bfsImpl(Set(from), Set.empty, startAcc)
 }
 
-val answer1 = bfs(containedBy, "shiny gold", 0)( (_, i) => i + 1) - 1
+val answer1 = bfs(containedBy, "shiny gold", 0)( (_, i) => i + 1) - 1 // - 1 because we don't count "shiny gold"
+
+val answer2 = {
+  def countBags(color: String): Int = {
+    1 +
+      contains.getOrElse(color, Nil)
+        .map { case BagInfo(n, color) => n*countBags(color) }.sum
+  }
+  countBags("shiny gold") - 1 // -1 as we don't count the "shiny gold" bag
+}
 
