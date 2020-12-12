@@ -6,7 +6,7 @@ def getNumbersIte = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/inp
   .map(_.toInt)
 
 
-def findFirstWeakness(windowSize: Int): Option[Int] = {
+def findWeakness(windowSize: Int): Option[Int] = {
   val numbersIte = getNumbersIte
 
   val solutions = mutable.Map.empty[Int, Set[Int]].withDefaultValue(Set.empty[Int]) // solution -> numbers
@@ -53,4 +53,23 @@ def findFirstWeakness(windowSize: Int): Option[Int] = {
   }
 }
 
-val answers1 = findFirstWeakness(25)
+val weakness = findWeakness(25).get
+
+def findWeaknessSet: Option[mutable.Queue[Int]] = {
+  var currentSum = 0
+  val contiguous = mutable.Queue.empty[Int]
+
+  getNumbersIte.find { n =>
+    // Add n to the contiguous queue
+    contiguous.enqueue(n)
+    currentSum += n
+
+    // Dequeue while contiguous is gt weakness
+    while (currentSum > weakness) currentSum -= contiguous.dequeue()
+
+    contiguous.size > 1 && currentSum == weakness
+  }.map { _ => contiguous }
+}
+
+val weaknessSet = findWeaknessSet.get
+val answer = weaknessSet.max + weaknessSet.min
