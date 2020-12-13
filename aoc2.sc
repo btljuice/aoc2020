@@ -1,7 +1,7 @@
 import scala.io.Source
 
 val regex = raw"(\d+)-(\d+) (.): (.*)".r
-val entries = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc2.txt")
+val entries = Source.fromFile("aoc2.txt")
   .getLines
   .collect { case regex(min, max, c, password) => (min.toInt, max.toInt, c.head, password) }
   .toStream

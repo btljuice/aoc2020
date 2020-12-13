@@ -6,7 +6,7 @@ val containedRegex = raw"(\d+) (\D+) bag[s]?[,.]".r
 
 case class BagInfo(n: Int, color: String)
 
-val contains = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc7.txt")
+val contains = Source.fromFile("aoc7.txt")
   .getLines
   .flatMap { case ruleRegex(bag, containedBagsStr) =>
     val containedBags = containedRegex.findAllMatchIn(containedBagsStr).map { m =>

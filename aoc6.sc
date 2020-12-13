@@ -5,7 +5,7 @@ case class Survey(answers: List[String]) {
   def intersection = answers.map(_.toSet).reduce(_ intersect _).size
 }
 
-val surveys = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc6.txt")
+val surveys = Source.fromFile("aoc6.txt")
   .getLines
   .toStream
   .append(Stream(""))

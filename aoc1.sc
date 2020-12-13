@@ -4,7 +4,7 @@ import scala.util.control.Breaks._
 
 // TODO: Use a HashMap
 
-val entries =  Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc1.txt")
+val entries =  Source.fromFile("aoc1.txt")
   .getLines
   .map(_.toInt)
   .toVector

@@ -1,7 +1,7 @@
 import scala.io.Source
 import scala.collection.mutable
 
-def getNumbersIte = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc9.txt")
+def getNumbersIte = Source.fromFile("aoc9.txt")
   .getLines
   .map(_.toInt)
 

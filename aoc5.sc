@@ -1,6 +1,6 @@
 import scala.io.Source
 
-val entries = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc5.txt")
+val entries = Source.fromFile("aoc5.txt")
   .getLines
   .toStream
   .map { _.map {

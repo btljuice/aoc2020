@@ -5,7 +5,7 @@ case class Instruction(label: String, counter: Int)
 
 val instructionRegex = raw"(nop|acc|jmp) ([+-]\d+)".r
 
-val code = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc8.txt")
+val code = Source.fromFile("aoc8.txt")
   .getLines
   .map { case instructionRegex(label, counter) => Instruction(label, counter.toInt) }
   .toVector

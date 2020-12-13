@@ -1,7 +1,7 @@
 import scala.io.Source
 import scala.util.Try
 
-val entries = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc4.txt")
+val entries = Source.fromFile("aoc4.txt")
   .getLines
   .toStream
 
