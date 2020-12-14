@@ -2,7 +2,7 @@ import scala.io.Source
 import scala.collection.mutable
 
 // Adapter output
-val adapters = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc10.txt")
+val adapters = Source.fromFile("aoc10.txt")
   .getLines
   .map(_.toInt)
   .toArray
