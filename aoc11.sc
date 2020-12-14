@@ -24,57 +24,43 @@ def printSeats(seats: IndexedSeq[IndexedSeq[Space]]): Unit = {
   println("")
 }
 
-@tailrec def occupy(seats: IndexedSeq[IndexedSeq[Space]], count: Int = 0): IndexedSeq[IndexedSeq[Space]] = {
-  def occupied(i: Int, j: Int) = if (seats.lift(i).flatMap(_.lift(j)).contains(Occupied)) 1 else 0
-  def countOccupied(i: Int, j: Int): Int =
-    ( for { di <- -1 to 1; dj <- -1 to 1; if di != 0 || dj != 0 } yield { occupied(i + di, j + dj)} ).sum
-
-  var modified = false
-  val newSeats = {
-    for { i <- seats.indices } yield {
-      for { j <- seats(i).indices } yield {
-        val s = seats(i)(j)
-        lazy val nbOccupied = countOccupied(i, j)
-        val ns = s match {
-          case Floor => Floor
-          case Empty if nbOccupied == 0 => modified = true; Occupied
-          case Occupied if nbOccupied >= 4 => modified = true; Empty
-          case x => x
-        }
-        ns
-      }
-    }
-  }
-  //    printSeats(newSeats)
-  if (modified /* && count <= 5*/) occupy(newSeats, count + 1) else newSeats
-}
-
-
-val answer1 = {
-  @tailrec def occupy(seats: IndexedSeq[IndexedSeq[Space]], count: Int = 0): IndexedSeq[IndexedSeq[Space]] = {
-    def occupied(i: Int, j: Int) = if (seats.lift(i).flatMap(_.lift(j)).contains(Occupied)) 1 else 0
-    def countOccupied(i: Int, j: Int): Int =
-      ( for { di <- -1 to 1; dj <- -1 to 1; if di != 0 || dj != 0 } yield { occupied(i + di, j + dj)} ).sum
+def occupy(
+  visibleLookup: (Int, Int) => Seq[(Int, Int)],
+  rule: (Space, => Int) => Space,
+): IndexedSeq[IndexedSeq[Space]] = {
+  @tailrec def occupyImpl(seats: IndexedSeq[IndexedSeq[Space]], count: Int = 0): IndexedSeq[IndexedSeq[Space]] = {
+    def isOccupied(i: Int, j: Int): Boolean = seats.lift(i).flatMap(_.lift(j)).contains(Occupied)
+    def countOccupied(visibleIndices: Seq[(Int, Int)]): Int = visibleIndices.count { case (i, j) => isOccupied(i, j) }
 
     var modified = false
     val newSeats = {
       for { i <- seats.indices } yield {
         for { j <- seats(i).indices } yield {
           val s = seats(i)(j)
-          lazy val nbOccupied = countOccupied(i, j)
-          val ns = s match {
-            case Floor => Floor
-            case Empty if nbOccupied == 0 => modified = true; Occupied
-            case Occupied if nbOccupied >= 4 => modified = true; Empty
-            case x => x
-          }
+          lazy val nbOccupied = countOccupied(visibleLookup(i, j))
+          val ns = rule(s, nbOccupied)
+          if (s != ns) modified = true
           ns
         }
       }
     }
-//    printSeats(newSeats)
-    if (modified /* && count <= 5*/) occupy(newSeats, count + 1) else newSeats
+    //    printSeats(newSeats)
+    if (modified /* && count <= 5*/) occupyImpl(newSeats, count + 1) else newSeats
   }
 
-  occupy(initialSeats).flatten.count { case Occupied => true; case _ => false }
+  occupyImpl(initialSeats)
+}
+
+val answer1 = {
+  def adjacents(i: Int, j: Int): Seq[(Int, Int)] =
+    for { di <- -1 to 1; dj <- -1 to 1; if di != 0 || dj != 0 } yield { (i + di, j + dj) }
+
+  def rules(s: Space, nbOccupied: => Int): Space = s match {
+    case Floor => Floor
+    case Empty if nbOccupied == 0 => Occupied
+    case Occupied if nbOccupied >= 4 => Empty
+    case x => x
+  }
+
+  occupy(adjacents, rules).flatten.count { case Occupied => true; case _ => false }
 }
