@@ -8,7 +8,7 @@ final object Empty extends Seat
 final object Occupied extends Seat
 final object Floor extends Space
 
-val initialSeats: IndexedSeq[IndexedSeq[Space]] = Source.fromFile("/Users/atrudeau/code-non-hopper/aoc2020/input/aoc11.txt")
+val initialSeats: IndexedSeq[IndexedSeq[Space]] = Source.fromFile("aoc11.txt")
   .getLines
   .map( _.map {
     case '.' => Floor
