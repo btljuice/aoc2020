@@ -49,7 +49,7 @@ def occupy(
         }
       }
     }
-    newSeats.printSeats
+    // newSeats.printSeats
     if (modified /* && count <= 5*/) occupyImpl(newSeats, count + 1) else newSeats
   }
 
