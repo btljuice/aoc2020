@@ -3,7 +3,7 @@ import scala.io.Source
 val file = Source.fromFile("aoc13.txt").getLines
 
 val timestamp = file.next.toLong
-val buses: IndexedSeq[Option[Long]] = file.next.split(',').map { case "x" => None; case s => Some(s.toInt) }
+val buses: IndexedSeq[Option[Long]] = file.next.split(',').map { case "x" => None; case s => Some(s.toLong) }
 
 // Earliest bus
 val answer1 = buses.flatten.toSet.map { id: Long =>
@@ -12,14 +12,17 @@ val answer1 = buses.flatten.toSet.map { id: Long =>
   }.minBy(_._2) match { case (id, timeToWait) => id*timeToWait }
 
 
-// Brute force w/ the highest value
 val answer2 = {
-  val validBuses = buses.zipWithIndex.collect { case (Some(id), i) => (id, i) }
-  def isSolution(n: Long) = validBuses.forall { case (id, i) => (n + i) % id == 0 }
+  val validBuses = buses
+    .zipWithIndex
+    .collect { case (Some(id), i) => (id, i) }
+    .sortBy(-_._1)
 
-  val (maxId, maxI) = validBuses.maxBy(_._1)
-  var t = maxId - maxI
-  while (!isSolution(t)) t += maxId
+  val (offset0, step0) = validBuses.head match { case (id, i) => (id - i, id) }
 
-  t
+  validBuses.tail.foldLeft { (offset0, step0) } { case ((offset, step), (id, i)) =>
+    var n = offset
+    while ((n + i) % id != 0) n += step
+    (n, step*id)
+  }
 }
